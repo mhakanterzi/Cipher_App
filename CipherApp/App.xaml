@@ -1,9 +1,169 @@
-﻿<Application x:Class="CipherApp.App"
+<Application x:Class="CipherApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:CipherApp"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Color Palette -->
+        <Color x:Key="Clr.Bg0">#0B1020</Color>
+        <Color x:Key="Clr.Bg1">#0F172A</Color>
+        <Color x:Key="Clr.Surface">#111827</Color>
+        <Color x:Key="Clr.Card">#0B1220</Color>
+        <Color x:Key="Clr.Text">#E5E7EB</Color>
+        <Color x:Key="Clr.Muted">#9CA3AF</Color>
+        <Color x:Key="Clr.Primary">#4F46E5</Color>
+        <Color x:Key="Clr.Accent">#3B82F6</Color>
+        <Color x:Key="Clr.Secondary">#10B981</Color>
+        <Color x:Key="Clr.Warning">#F59E0B</Color>
+        <Color x:Key="Clr.Danger">#EF4444</Color>
+
+        <SolidColorBrush x:Key="Brush.Bg0" Color="{StaticResource Clr.Bg0}"/>
+        <SolidColorBrush x:Key="Brush.Bg1" Color="{StaticResource Clr.Bg1}"/>
+        <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Clr.Surface}"/>
+        <SolidColorBrush x:Key="Brush.Card" Color="{StaticResource Clr.Card}"/>
+        <SolidColorBrush x:Key="Brush.Text" Color="{StaticResource Clr.Text}"/>
+        <SolidColorBrush x:Key="Brush.Muted" Color="{StaticResource Clr.Muted}"/>
+        <SolidColorBrush x:Key="Brush.Primary" Color="{StaticResource Clr.Primary}"/>
+        <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Clr.Accent}"/>
+        <SolidColorBrush x:Key="Brush.Secondary" Color="{StaticResource Clr.Secondary}"/>
+        <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Clr.Warning}"/>
+        <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Clr.Danger}"/>
+
+        <!-- Gradients -->
+        <LinearGradientBrush x:Key="Grad.Primary" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="{StaticResource Clr.Primary}" Offset="0"/>
+            <GradientStop Color="{StaticResource Clr.Accent}" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="Grad.Header" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#3B82F6" Offset="0"/>
+            <GradientStop Color="#8B5CF6" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Reusable animations -->
+        <Storyboard x:Key="Stb.FadeSlideIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25"/>
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="8" To="0" Duration="0:0:0.25"/>
+        </Storyboard>
+        <Storyboard x:Key="Stb.FadeIn">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.25"/>
+        </Storyboard>
+        <Storyboard x:Key="Stb.FadeOut">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.25"/>
+        </Storyboard>
+
+        <!-- Text Styles -->
+        <Style x:Key="Txt.H1" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+        </Style>
+        <Style x:Key="Txt.Caption" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Brush.Muted}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- Badge Style -->
+        <Style x:Key="Badge" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Grad.Primary}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="6,2"/>
+        </Style>
+
+        <!-- Common Converters -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Controls: Buttons -->
+        <Style x:Key="Btn.Pill" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource Grad.Primary}"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value><ScaleTransform ScaleX="1" ScaleY="1"/></Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value><DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.25"/></Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform"><Setter.Value><ScaleTransform ScaleX="1.04" ScaleY="1.04"/></Setter.Value></Setter>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="RenderTransform"><Setter.Value><ScaleTransform ScaleX="0.98" ScaleY="0.98"/></Setter.Value></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Btn.Ghost" TargetType="Button" BasedOn="{StaticResource Btn.Pill}">
+            <Setter Property="Background" Value="{StaticResource Brush.Surface}"/>
+            <Setter Property="BorderBrush" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- TextBox -->
+        <Style x:Key="Input.Dark" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource Brush.Card}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+            <Setter Property="BorderBrush" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <!-- Card -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Brush.Surface}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Effect"><Setter.Value><DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.2"/></Setter.Value></Setter>
+        </Style>
+
+        <!-- Nav List Item -->
+        <Style x:Key="NavItem" TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="0,2,0,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" CornerRadius="8" Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="6"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1F2937"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#243B53"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Tab Header with underline indicator -->
+        <Style x:Key="TabItem.Underline" TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid Margin="4,0">
+                            <ContentPresenter x:Name="Content" Margin="8,8,8,4"/>
+                            <Rectangle x:Name="Underline" Height="2" VerticalAlignment="Bottom" Fill="{StaticResource Grad.Primary}" Opacity="0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Underline" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Converters -->
+        <local:InverseBoolToVisibilityConverter x:Key="NotBoolToVis" />
     </Application.Resources>
 </Application>

@@ -5,58 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CipherApp"
         xmlns:vm="clr-namespace:CipherApp.ViewModels"
+        xmlns:views="clr-namespace:CipherApp.Views"
         mc:Ignorable="d"
-        Title="Şifreleme Atölyesi" Height="600" Width="1000" Background="#0F172A">
+        Title="Şifreleme Atölyesi" Height="600" Width="1000" Background="{StaticResource Brush.Bg1}">
     <Window.Resources>
-        <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#3B82F6" Offset="0"/>
-            <GradientStop Color="#8B5CF6" Offset="1"/>
-        </LinearGradientBrush>
-        <Style x:Key="AccentButton" TargetType="Button">
-            <Setter Property="Background" Value="#0B1220"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="10,8"/>
-            <Setter Property="BorderBrush" Value="#374151"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#66000000"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#111827"/>
-                    <Setter Property="RenderTransform">
-                        <Setter.Value>
-                            <ScaleTransform ScaleX="1.03" ScaleY="1.03"/>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="DarkTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="#0B1220"/>
-            <Setter Property="Foreground" Value="#E5E7EB"/>
-            <Setter Property="BorderBrush" Value="#374151"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="8,6"/>
-        </Style>
-        <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="#111827"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="12"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.2"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <!-- Use global styles from App.xaml -->
     </Window.Resources>
     <Window.DataContext>
         <vm:MainViewModel />
@@ -68,13 +21,13 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Background="#0F172A">
-            <Rectangle Fill="{StaticResource HeaderGradient}" Opacity="0.25"/>
+        <Grid Grid.Row="0" Background="{StaticResource Brush.Bg1}">
+            <Rectangle Fill="{StaticResource Grad.Header}" Opacity="0.25"/>
             <StackPanel Orientation="Horizontal" Margin="16" VerticalAlignment="Center">
                 <TextBlock Text="🔐" FontSize="32" Margin="0,0,8,0"/>
                 <StackPanel>
-                    <TextBlock Text="Şifreleme Atölyesi" FontSize="24" FontWeight="Bold" Foreground="#F9FAFB"/>
-                    <TextBlock Text="Klasik şifreler, kolay kullanım, adım adım anlatım" Foreground="#9CA3AF"/>
+                    <TextBlock Text="Şifreleme Atölyesi" FontSize="24" FontWeight="Bold" Foreground="{StaticResource Brush.Text}"/>
+                    <TextBlock Text="Klasik şifreler, kolay kullanım, adım adım anlatım" Foreground="{StaticResource Brush.Muted}"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -82,17 +35,35 @@
         <!-- Body -->
         <Grid Grid.Row="1" Margin="16">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="16"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border Background="#111827" CornerRadius="12" Padding="12" >
+        <Border Background="{StaticResource Brush.Surface}" CornerRadius="12" Padding="12" >
             <StackPanel>
-                <TextBlock Text="Şifreler" Foreground="#E5E7EB" FontSize="18" FontWeight="Bold"/>
+                <TextBlock Text="Gezinme" Foreground="{StaticResource Brush.Text}" FontSize="18" FontWeight="Bold"/>
+                <ListBox ItemsSource="{Binding MenuItems}" SelectedItem="{Binding SelectedMenu}"
+                         Background="{StaticResource Brush.Card}" BorderBrush="{StaticResource Brush.Card}" Foreground="{StaticResource Brush.Text}"
+                         ItemContainerStyle="{StaticResource NavItem}" Margin="0,8,0,8">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Icon}" Margin="6,0,6,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"/>
+                                    <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource Brush.Muted}" FontSize="11"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock Text="Şifreler" Foreground="{StaticResource Brush.Text}" FontSize="16" FontWeight="Bold"/>
                 <ListBox x:Name="CipherListBox" ItemsSource="{Binding CipherList}" SelectedItem="{Binding SelectedCipher}" Margin="0,8,0,0"
-                         Background="#0B1220" BorderBrush="#0B1220" Foreground="#E5E7EB">
+                         Background="{StaticResource Brush.Card}" BorderBrush="{StaticResource Brush.Card}" Foreground="{StaticResource Brush.Text}"
+                         ItemContainerStyle="{StaticResource NavItem}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" Padding="8"/>
@@ -101,7 +72,7 @@
                 </ListBox>
 
                 <Separator Margin="0,12"/>
-                <Button Content="Yeni Soru" Command="{Binding NewQuizCommand}" Background="#22C55E" Foreground="White" Padding="8"/>
+                <Button Content="Yeni Soru" Command="{Binding NewQuizCommand}" Style="{StaticResource Btn.Pill}" Background="{StaticResource Brush.Secondary}"/>
             </StackPanel>
         </Border>
 
@@ -116,9 +87,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{Binding SelectedCipher.Name}" FontSize="22" FontWeight="Bold" Foreground="#F9FAFB"/>
+                <TextBlock Text="{Binding SelectedCipher.Name}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Brush.Text}"/>
 
-                <TabControl Grid.Row="1" Background="#111827" BorderBrush="#111827">
+                <!-- If React (wwwroot/index.html) is present, show ReactView as main content, otherwise WPF tabs -->
+                <Grid Grid.Row="1">
+                    <views:ReactView Visibility="{Binding IsReactAvailable, Converter={StaticResource BoolToVis}}"/>
+                    <TabControl Background="{StaticResource Brush.Surface}" BorderBrush="{StaticResource Brush.Surface}" ItemContainerStyle="{StaticResource TabItem.Underline}"
+                                SelectedIndex="{Binding SelectedTabIndex}" Visibility="{Binding IsReactAvailable, Converter={StaticResource NotBoolToVis}}">
                     <!-- Atölye Tab -->
                     <TabItem Header="Atölye">
                         <Grid Margin="8">
@@ -127,26 +102,32 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Margin="0,0,12,0">
-                                <TextBlock Text="Açıklama" Foreground="#9CA3AF"/>
-                                <TextBlock TextWrapping="Wrap" Foreground="#D1D5DB" Margin="0,4,0,12" Text="{Binding Explanation}"/>
+                                <TextBlock Text="Açıklama" Foreground="{StaticResource Brush.Muted}"/>
+                                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Brush.Text}" Margin="0,4,0,12" Text="{Binding Explanation}"/>
 
-                                <TextBlock Text="Anahtar" Foreground="#9CA3AF"/>
-                                <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding KeyInput, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Foreground="#6B7280" FontSize="12" Margin="0,2,0,12" Text="{Binding KeyHint}"/>
+                                <TextBlock Text="Anahtar" Foreground="{StaticResource Brush.Muted}"/>
+                                <TextBox Style="{StaticResource Input.Dark}" Text="{Binding KeyInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Foreground="{StaticResource Brush.Muted}" FontSize="12" Margin="0,2,0,12" Text="{Binding KeyHint}"/>
 
-                                <TextBlock Text="Girdi" Foreground="#9CA3AF"/>
-                                <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding Plaintext, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="140"/>
+                                <TextBlock Text="Girdi" Foreground="{StaticResource Brush.Muted}"/>
+                                <TextBox Style="{StaticResource Input.Dark}" Text="{Binding Plaintext, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="140"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <Button Content="Şifrele" Command="{Binding EncryptCommand}" Style="{StaticResource AccentButton}" Background="#3B82F6" Margin="0,0,8,0"/>
-                                    <Button Content="Çöz" Command="{Binding DecryptCommand}" Style="{StaticResource AccentButton}" Background="#8B5CF6"/>
+                                    <Button Content="Şifrele" Command="{Binding EncryptCommand}" Style="{StaticResource Btn.Pill}" Background="{StaticResource Grad.Primary}" Margin="0,0,8,0"/>
+                                    <Button Content="Çöz" Command="{Binding DecryptCommand}" Style="{StaticResource Btn.Pill}" Background="{StaticResource Grad.Primary}" Margin="0,0,8,0"/>
+                                    <Button Content="Anahtar Üret" Command="{Binding RandomizeKeyCommand}" Style="{StaticResource Btn.Ghost}"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <Button Content="Örnek Metin" Command="{Binding InsertExampleCommand}" Style="{StaticResource Btn.Ghost}" Margin="0,0,8,0"/>
+                                    <Button Content="Çıktıyı Kopyala" Command="{Binding CopyOutputCommand}" Style="{StaticResource Btn.Ghost}"/>
                                 </StackPanel>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Çıktı" Foreground="#9CA3AF"/>
-                                <Border Style="{StaticResource Card}" Background="#0B1220" Padding="8">
-                                    <TextBox Text="{Binding Output}" AcceptsReturn="True" Background="#0B1220" Foreground="#F9FAFB" BorderThickness="0"/>
+                                <TextBlock Text="Çıktı" Foreground="{StaticResource Brush.Muted}"/>
+                                <Border Style="{StaticResource Card}" Background="{StaticResource Brush.Card}" Padding="8">
+                                    <TextBox Text="{Binding Output}" AcceptsReturn="True" Background="{StaticResource Brush.Card}" Foreground="{StaticResource Brush.Text}" BorderThickness="0"/>
                                 </Border>
                             </StackPanel>
                         </Grid>
@@ -160,28 +141,36 @@
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Margin="0,0,12,0">
-                                <TextBlock Text="Anahtar" Foreground="#9CA3AF"/>
-                                <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding KeyInput, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Foreground="#6B7280" FontSize="12" Margin="0,2,0,12" Text="{Binding KeyHint}"/>
-                                <TextBlock Text="Metin" Foreground="#9CA3AF"/>
-                                <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding Plaintext, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120"/>
+                                <TextBlock Text="Anahtar" Foreground="{StaticResource Brush.Muted}"/>
+                                <TextBox Style="{StaticResource Input.Dark}" Text="{Binding KeyInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Foreground="{StaticResource Brush.Muted}" FontSize="12" Margin="0,2,0,12" Text="{Binding KeyHint}"/>
+                                <TextBlock Text="Metin" Foreground="{StaticResource Brush.Muted}"/>
+                                <TextBox Style="{StaticResource Input.Dark}" Text="{Binding Plaintext, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="120"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <Button Content="Şifreleme Adımları" Command="{Binding GenerateEncryptStepsCommand}" Style="{StaticResource AccentButton}" Background="#3B82F6" Margin="0,0,8,0"/>
-                                    <Button Content="Çözme Adımları" Command="{Binding GenerateDecryptStepsCommand}" Style="{StaticResource AccentButton}" Background="#8B5CF6"/>
+                                    <Button Content="Şifreleme Adımları" Command="{Binding GenerateEncryptStepsCommand}" Style="{StaticResource Btn.Pill}" Margin="0,0,8,0"/>
+                                    <Button Content="Çözme Adımları" Command="{Binding GenerateDecryptStepsCommand}" Style="{StaticResource Btn.Pill}"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <Button Content="İleri" Command="{Binding NextStepCommand}" Style="{StaticResource AccentButton}"/>
-                                    <Button Content="Sıfırla" Command="{Binding ResetStepsCommand}" Style="{StaticResource AccentButton}" Margin="8,0,0,0"/>
+                                    <Button Content="İleri" Command="{Binding NextStepCommand}" Style="{StaticResource Btn.Ghost}"/>
+                                    <Button Content="Sıfırla" Command="{Binding ResetStepsCommand}" Style="{StaticResource Btn.Ghost}" Margin="8,0,0,0"/>
                                 </StackPanel>
+
+                                <!-- Playfair board preview when applicable -->
+                                <Border Style="{StaticResource Card}" Margin="0,12,0,0" Visibility="{Binding SelectedCipher, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel>
+                                        <TextBlock Text="Playfair Tablosu" Foreground="{StaticResource Brush.Muted}"/>
+                                        <TextBlock Text="{Binding PlayfairBoard}" Foreground="{StaticResource Brush.Text}"/>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
 
                             <ScrollViewer Grid.Column="1">
                                 <ItemsControl ItemsSource="{Binding Steps}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Background="#0B1220" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                                            <Border Background="{StaticResource Brush.Card}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
                                                 <Border.Triggers>
                                                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                                                         <BeginStoryboard>
@@ -195,9 +184,12 @@
                                                 <Border.RenderTransform>
                                                     <TranslateTransform Y="0"/>
                                                 </Border.RenderTransform>
-                                                <TextBlock>
-                                                    <Run Text="Adım "/><Run Text="{Binding Index}"/><Run Text=": "/><Run Text="{Binding Text}"/>
-                                                </TextBlock>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Border Style="{StaticResource Badge}" Margin="0,0,8,0">
+                                                        <TextBlock Text="{Binding Index}"/>
+                                                    </Border>
+                                                    <TextBlock Foreground="{StaticResource Brush.Text}" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Text}"/>
+                                                </StackPanel>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -214,24 +206,40 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <Button Content="Yeni Soru" Command="{Binding NewQuizCommand}" Style="{StaticResource AccentButton}" Background="#22C55E"/>
-                                <Button Content="Cevabı Göster" Command="{Binding ShowAnswerCommand}" Style="{StaticResource AccentButton}" Background="#EF4444" Margin="8,0,0,0"/>
+                                <Button Content="Yeni Soru" Command="{Binding NewQuizCommand}" Style="{StaticResource Btn.Pill}" Background="{StaticResource Brush.Secondary}"/>
+                                <Button Content="Cevabı Göster" Command="{Binding ShowAnswerCommand}" Style="{StaticResource Btn.Pill}" Background="{StaticResource Brush.Danger}" Margin="8,0,0,0"/>
                             </StackPanel>
                             <Border Style="{StaticResource Card}" Grid.Row="1">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <TextBlock Text="Şifre:" Foreground="#9CA3AF"/>
-                                        <TextBlock Text="{Binding CurrentQuestion.CipherName}" Foreground="#D1D5DB" Margin="6,0,0,0"/>
+                                        <TextBlock Text="Şifre:" Foreground="{StaticResource Brush.Muted}"/>
+                                        <TextBlock Text="{Binding CurrentQuestion.CipherName}" Foreground="{StaticResource Brush.Text}" Margin="6,0,0,0"/>
                                     </StackPanel>
-                                    <TextBlock Text="Şifreli Metin" Foreground="#9CA3AF"/>
+                                    <TextBlock Text="Şifreli Metin" Foreground="{StaticResource Brush.Muted}"/>
                                     <TextBlock Text="{Binding CurrentQuestion.Ciphertext}" TextWrapping="Wrap" Foreground="#FDE68A"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
                     </TabItem>
-                </TabControl>
+
+                    </TabControl>
+                </Grid>
             </Grid>
         </Border>
         </Grid>
+
+        <!-- Toast Notification -->
+        <Border Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,24,24,0" Background="{StaticResource Brush.Surface}" CornerRadius="8" Padding="10" Opacity="0"
+                Visibility="{Binding ShowToast, Converter={StaticResource BoolToVis}}">
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="Border.Loaded">
+                    <BeginStoryboard Storyboard="{StaticResource Stb.FadeIn}"/>
+                </EventTrigger>
+            </Border.Triggers>
+            <StackPanel Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
+                <TextBlock Text="🔔" Margin="0,0,6,0"/>
+                <TextBlock Text="{Binding ToastText}" Foreground="{StaticResource Brush.Text}"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

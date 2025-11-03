@@ -5,11 +5,29 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CipherApp.Core;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.IO;
 
 namespace CipherApp.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        // Navigation
+        public ObservableCollection<MenuItem> MenuItems { get; } = new();
+        private MenuItem? _selectedMenu;
+        public MenuItem? SelectedMenu
+        {
+            get => _selectedMenu;
+            set { _selectedMenu = value; OnPropertyChanged(); if (value != null) SelectedTabIndex = value.TabIndex; }
+        }
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set { _selectedTabIndex = value; OnPropertyChanged(); }
+        }
+
         public ObservableCollection<ICipher> CipherList { get; } = new();
 
         private ICipher? _selectedCipher;
@@ -23,7 +41,7 @@ namespace CipherApp.ViewModels
         public string KeyInput
         {
             get => _keyInput;
-            set { _keyInput = value; OnPropertyChanged(); }
+            set { _keyInput = value; OnPropertyChanged(); UpdatePlayfairBoard(); }
         }
 
         private string _plaintext = string.Empty;
@@ -81,8 +99,34 @@ namespace CipherApp.ViewModels
         public ICommand NextStepCommand { get; }
         public ICommand ResetStepsCommand { get; }
 
+        // Helpers
+        public ICommand CopyOutputCommand { get; }
+        public ICommand RandomizeKeyCommand { get; }
+        public ICommand InsertExampleCommand { get; }
+        // React bridge handled by WebView2 UserControl; no localhost option in menu.
+
+        private bool _showToast;
+        public bool ShowToast
+        {
+            get => _showToast;
+            set { _showToast = value; OnPropertyChanged(); }
+        }
+
+        private string _toastText = string.Empty;
+        public string ToastText
+        {
+            get => _toastText;
+            set { _toastText = value; OnPropertyChanged(); }
+        }
+
         public MainViewModel()
         {
+            // Navigation items map to TabControl order below
+            MenuItems.Add(new MenuItem { Title = "Atölye", Icon = "🧪", TabIndex = 0 });
+            MenuItems.Add(new MenuItem { Title = "Adım Adım", Icon = "🪜", TabIndex = 1 });
+            MenuItems.Add(new MenuItem { Title = "Soru", Icon = "❓", TabIndex = 2 });
+            SelectedMenu = MenuItems[0];
+
             CipherList.Add(new CaesarCipher());
             CipherList.Add(new MonoalphabeticCipher());
             CipherList.Add(new PlayfairCipher());
@@ -100,6 +144,14 @@ namespace CipherApp.ViewModels
             GenerateDecryptStepsCommand = new RelayCommand(() => GenerateSteps(encrypt: false));
             NextStepCommand = new RelayCommand(AdvanceStep);
             ResetStepsCommand = new RelayCommand(ResetSteps);
+
+            CopyOutputCommand = new RelayCommand(CopyOutput);
+            RandomizeKeyCommand = new RelayCommand(RandomizeKey);
+            InsertExampleCommand = new RelayCommand(InsertExample);
+            // React bridge auto-detects wwwroot; no commands
+
+            // Detect React availability
+            UpdateReactAvailable();
         }
 
         private void DoEncrypt()
@@ -144,11 +196,13 @@ namespace CipherApp.ViewModels
                     TranspositionCipher => "Anahtar: kelime (kolon)",
                     _ => string.Empty
                 };
+                UpdatePlayfairBoard();
             }
             catch
             {
                 Explanation = string.Empty;
                 KeyHint = string.Empty;
+                PlayfairBoard = string.Empty;
             }
         }
 
@@ -294,6 +348,108 @@ namespace CipherApp.ViewModels
                 lines.Add(string.Join(" ", row));
             }
             return string.Join(" | ", lines);
+        }
+
+        private async void CopyOutput()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Output)) Clipboard.SetText(Output);
+                Toast("Çıktı kopyalandı");
+            }
+            catch { Toast("Kopyalama başarısız"); }
+            await Task.CompletedTask;
+        }
+
+        private void RandomizeKey()
+        {
+            if (SelectedCipher == null) return;
+            var rnd = new Random();
+            if (SelectedCipher is CaesarCipher)
+                KeyInput = rnd.Next(1, 26).ToString();
+            else if (SelectedCipher is VigenereCipher or PlayfairCipher or TranspositionCipher)
+                KeyInput = RandomWord(rnd.Next(5,8));
+            else if (SelectedCipher is HillCipher)
+                KeyInput = RandomInvertible2x2();
+            else if (SelectedCipher is MonoalphabeticCipher)
+                KeyInput = RandomPermutation();
+            Toast("Anahtar üretildi");
+        }
+
+        private void InsertExample()
+        {
+            Plaintext = "KRIPTOGRAFI OGRENMEK COK EGLENCELI";
+            Toast("Örnek metin eklendi");
+        }
+
+        private async void Toast(string text)
+        {
+            ToastText = text;
+            ShowToast = true;
+            await Task.Delay(1800);
+            ShowToast = false;
+        }
+
+        private static string RandomWord(int len)
+        {
+            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var rnd = new Random();
+            return new string(Enumerable.Range(0, len).Select(_ => alphabet[rnd.Next(alphabet.Length)]).ToArray());
+        }
+
+        private static string RandomPermutation()
+        {
+            var rnd = new Random();
+            var arr = Enumerable.Range('A', 26).Select(i => (char)i).ToArray();
+            for (int i = 0; i < arr.Length; i++) { int j = rnd.Next(i, arr.Length); (arr[i], arr[j]) = (arr[j], arr[i]); }
+            return new string(arr);
+        }
+
+        private static int Gcd(int a, int b) { while (b != 0) { int t = b; b = a % b; a = t; } return Math.Abs(a); }
+        private static string RandomInvertible2x2()
+        {
+            var rnd = new Random();
+            while (true)
+            {
+                int a = rnd.Next(0, 26), b = rnd.Next(0, 26), c = rnd.Next(0, 26), d = rnd.Next(0, 26);
+                int det = ((a * d) - (b * c)) % 26; if (det < 0) det += 26;
+                if (Gcd(det, 26) == 1) return $"{a} {b} {c} {d}";
+            }
+        }
+
+        // Playfair board preview
+        private string _playfairBoard = string.Empty;
+        public string PlayfairBoard
+        {
+            get => _playfairBoard;
+            set { _playfairBoard = value; OnPropertyChanged(); }
+        }
+        private void UpdatePlayfairBoard()
+        {
+            if (SelectedCipher is not PlayfairCipher) { PlayfairBoard = string.Empty; return; }
+            try
+            {
+                var (grid, _) = BuildPlayfair(KeyInput);
+                PlayfairBoard = GridToText(grid);
+            }
+            catch { PlayfairBoard = string.Empty; }
+        }
+
+        private bool _isReactAvailable;
+        public bool IsReactAvailable
+        {
+            get => _isReactAvailable;
+            set { _isReactAvailable = value; OnPropertyChanged(); }
+        }
+        private void UpdateReactAvailable()
+        {
+            try
+            {
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                var p = Path.Combine(baseDir, "wwwroot", "index.html");
+                IsReactAvailable = File.Exists(p);
+            }
+            catch { IsReactAvailable = false; }
         }
     }
 }
