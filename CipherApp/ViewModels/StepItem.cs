@@ -1,0 +1,11 @@
+using System;
+
+namespace CipherApp.ViewModels
+{
+    public class StepItem
+    {
+        public int Index { get; set; }
+        public string Text { get; set; } = string.Empty;
+    }
+}
+

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp\\CipherApp.csproj": {}
+    "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\CipherApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\CipherApp.Core.csproj": {
+    "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\CipherApp.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\CipherApp.Core.csproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\CipherApp.Core.csproj",
         "projectName": "CipherApp.Core",
-        "projectPath": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\CipherApp.Core.csproj",
+        "projectPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\CipherApp.Core.csproj",
         "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\obj\\",
+        "outputPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -65,14 +65,14 @@
         }
       }
     },
-    "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp\\CipherApp.csproj": {
+    "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\CipherApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp\\CipherApp.csproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\CipherApp.csproj",
         "projectName": "CipherApp",
-        "projectPath": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp\\CipherApp.csproj",
+        "projectPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\CipherApp.csproj",
         "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp\\obj\\",
+        "outputPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -90,8 +90,8 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\CipherApp.Core.csproj": {
-                "projectPath": "C:\\Users\\lenovo\\Desktop\\Ciper_App\\CipherApp.Core\\CipherApp.Core.csproj"
+              "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\CipherApp.Core.csproj": {
+                "projectPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\CipherApp.Core.csproj"
               }
             }
           }
