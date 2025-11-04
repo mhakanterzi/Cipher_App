@@ -9,7 +9,8 @@ namespace CipherApp.Core
         string Plaintext,
         string KeyDescription,
         string Ciphertext,
-        string Explanation
+        string Explanation,
+        string KeyValue
     );
 
     public class QuizGenerator
@@ -42,7 +43,8 @@ namespace CipherApp.Core
             (object key, string keyDesc) = GenerateKey(cipher);
             var ct = cipher.Encrypt(pt, key);
             var exp = cipher.Explain(key);
-            return new CipherQuestion(cipher.Name, pt, keyDesc, ct, exp);
+            var keyVal = key?.ToString() ?? string.Empty;
+            return new CipherQuestion(cipher.Name, pt, keyDesc, ct, exp, keyVal);
         }
 
         private string GeneratePlaintext()

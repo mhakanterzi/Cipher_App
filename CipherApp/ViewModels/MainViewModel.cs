@@ -81,6 +81,13 @@ namespace CipherApp.ViewModels
             set { _currentQuestion = value; OnPropertyChanged(); }
         }
 
+        private bool _isAnswerRevealed;
+        public bool IsAnswerRevealed
+        {
+            get => _isAnswerRevealed;
+            set { _isAnswerRevealed = value; OnPropertyChanged(); }
+        }
+
         public ICommand EncryptCommand { get; }
         public ICommand DecryptCommand { get; }
         public ICommand NewQuizCommand { get; }
@@ -209,13 +216,15 @@ namespace CipherApp.ViewModels
         private void DoNewQuiz()
         {
             CurrentQuestion = _quiz.Next();
+            IsAnswerRevealed = false;
         }
 
         private void DoShowAnswer()
         {
             if (CurrentQuestion == null) return;
-            // Show the decryption of the ciphertext using the cipher name match
-            Explanation = $"Soru Çözümü:\n{CurrentQuestion.Explanation}\n\nDüz metin: {CurrentQuestion.Plaintext}\nŞifreli: {CurrentQuestion.Ciphertext}\nŞifre: {CurrentQuestion.CipherName}\nAnahtar: {CurrentQuestion.KeyDescription}";
+            // Show the decryption and details; also mark as revealed for Soru sekmesi
+            Explanation = $"Soru Çözümü:\n{CurrentQuestion.Explanation}\n\nDüz metin: {CurrentQuestion.Plaintext}\nŞifreli: {CurrentQuestion.Ciphertext}\nŞifre: {CurrentQuestion.CipherName}\nAnahtar: {CurrentQuestion.KeyValue} ({CurrentQuestion.KeyDescription})";
+            IsAnswerRevealed = true;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -217,6 +217,26 @@
                                     </StackPanel>
                                     <TextBlock Text="Şifreli Metin" Foreground="{StaticResource Brush.Muted}"/>
                                     <TextBlock Text="{Binding CurrentQuestion.Ciphertext}" TextWrapping="Wrap" Foreground="#FDE68A"/>
+
+                                    <!-- Cevap Bölümü: sadece gösterildiğinde görünür -->
+                                    <Separator Margin="0,12,0,12" Visibility="{Binding IsAnswerRevealed, Converter={StaticResource BoolToVis}}"/>
+                                    <StackPanel Visibility="{Binding IsAnswerRevealed, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="Cevap" Foreground="{StaticResource Brush.Muted}"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Brush.Text}"
+                                                   Text="{Binding CurrentQuestion.Plaintext}"/>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                            <TextBlock Text="Anahtar:" Foreground="{StaticResource Brush.Muted}"/>
+                                            <TextBlock Text="{Binding CurrentQuestion.KeyValue}" Foreground="{StaticResource Brush.Text}" Margin="6,0,0,0"/>
+                                            <TextBlock Text=" (" Foreground="{StaticResource Brush.Muted}"/>
+                                            <TextBlock Text="{Binding CurrentQuestion.KeyDescription}" Foreground="{StaticResource Brush.Muted}"/>
+                                            <TextBlock Text=")" Foreground="{StaticResource Brush.Muted}"/>
+                                        </StackPanel>
+
+                                        <TextBlock Text="Açıklama" Foreground="{StaticResource Brush.Muted}" Margin="0,8,0,0"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Brush.Text}"
+                                                   Text="{Binding CurrentQuestion.Explanation}"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
                         </Grid>
