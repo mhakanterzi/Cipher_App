@@ -5,11 +5,13 @@ using System.Text;
 
 namespace CipherApp.Core
 {
-    // Kolonlu yer değiştirme (Columnar Transposition)
+    /// <summary>
+    /// Implements the classic columnar transposition cipher with helper routines for key ordering.
+    /// </summary>
     public class TranspositionCipher : ICipher
     {
-        public string Name => "Transpozisyon (Kolonlu)";
-        public string Description => "Metin, anahtar kelime uzunluğunda sütunlara yazılır; sütunlar anahtarın sırasına göre okunur.";
+        public string Name => "Columnar Transposition";
+        public string Description => "Writes text into columns whose width is the key length, then reads the columns in key order.";
 
         public string Encrypt(string plaintext, object key)
         {
@@ -58,15 +60,15 @@ namespace CipherApp.Core
 
         public string Explain(object key)
         {
-            var k = key?.ToString()?.ToUpperInvariant() ?? "";
-            return $"Anahtar '{k}' harflerinin alfabetik sırasına göre sütunlar yeniden düzenlenir ve okunur.";
+            var k = key?.ToString()?.ToUpperInvariant() ?? string.Empty;
+            return $"Columns are reordered alphabetically by the key '{k}' and read top to bottom.";
         }
 
         private string PrepareKeyOrder(object key, out int[] order)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var k = new string(key.ToString()!.ToUpperInvariant().Where(ch => ch >= 'A' && ch <= 'Z').ToArray());
-            if (k.Length == 0) throw new ArgumentException("Anahtar yalnızca harflerden oluşmalıdır.");
+            if (k.Length == 0) throw new ArgumentException("Key must contain letters only.");
 
             var indexed = k.Select((ch, i) => (ch, i)).ToList();
             var sorted = indexed.OrderBy(t => t.ch).ThenBy(t => t.i).ToList();
@@ -77,4 +79,3 @@ namespace CipherApp.Core
         }
     }
 }
-

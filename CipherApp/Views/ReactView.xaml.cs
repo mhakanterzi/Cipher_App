@@ -5,6 +5,9 @@ using Microsoft.Web.WebView2.Core;
 
 namespace CipherApp.Views
 {
+    /// <summary>
+    /// Provides a WebView2 host for optional React-based content, handling missing content fallbacks.
+    /// </summary>
     public partial class ReactView : UserControl
     {
         public ReactView()

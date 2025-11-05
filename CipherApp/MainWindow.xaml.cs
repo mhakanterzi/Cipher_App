@@ -12,6 +12,9 @@ using System.Windows.Media.Animation;
 
 namespace CipherApp;
 
+/// <summary>
+/// Hosts the primary WPF window and wires lightweight visual behaviors such as fade animations.
+/// </summary>
 public partial class MainWindow : Window
 {
     public MainWindow()

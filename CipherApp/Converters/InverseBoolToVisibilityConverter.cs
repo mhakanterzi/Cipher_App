@@ -5,6 +5,9 @@ using System.Windows.Data;
 
 namespace CipherApp
 {
+    /// <summary>
+    /// Inverts boolean values to map true->Collapsed and false->Visible for WPF bindings.
+    /// </summary>
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

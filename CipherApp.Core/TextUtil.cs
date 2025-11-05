@@ -4,6 +4,9 @@ using System.Text;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Collects shared text utilities for normalization, modular arithmetic, and alphabet conversions.
+    /// </summary>
     internal static class TextUtil
     {
         private static readonly char[] Alphabet = Enumerable.Range('A', 26).Select(i => (char)i).ToArray();
@@ -49,7 +52,7 @@ namespace CipherApp.Core
                 (t, newT) = (newT, t - q * newT);
                 (r, newR) = (newR, r - q * newR);
             }
-            if (r > 1) throw new InvalidOperationException("Ters mod bulunamadı (modüler ters yok).");
+            if (r > 1) throw new InvalidOperationException("Ters mod bulunamad\u0131 (mod\u00FCler ters yok).");
             if (t < 0) t += m;
             return t;
         }

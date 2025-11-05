@@ -2,6 +2,9 @@ using System;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Defines the shared contract for every cipher implementation used by the application.
+    /// </summary>
     public interface ICipher
     {
         string Name { get; }

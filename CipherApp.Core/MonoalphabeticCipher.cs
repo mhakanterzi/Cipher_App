@@ -5,10 +5,13 @@ using System.Text;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Implements a monoalphabetic substitution cipher driven by a 26-letter permutation key.
+    /// </summary>
     public class MonoalphabeticCipher : ICipher
     {
-        public string Name => "Monoalfabetik (Basit Yerine Koyma)";
-        public string Description => "Alfabedeki her harf, bir permütasyonla başka bir harfe eşlenir. Çözüm için frekans analizi ve kelime kalıpları kullanılır.";
+        public string Name => "Monoalphabetic Substitution";
+        public string Description => "Each alphabet letter maps to another letter according to a 26-character permutation. Frequency analysis and word patterns aid decryption.";
 
         public string Encrypt(string plaintext, object key)
         {
@@ -45,16 +48,16 @@ namespace CipherApp.Core
 
         public string Explain(object key)
         {
-            return "Monoalfabetik şifre, A→?, B→?, ... Z→? şeklinde tekil bir eşleme kullanır. Çözümde frekans analizi (E, A, R, L gibi) ve kelime kalıpları (TEK, VE) önemlidir.";
+            return "A monoalphabetic cipher replaces each letter with a unique partner (A->?, B->?, ...). Attackers use frequency analysis and common word shapes to break it.";
         }
 
         private Dictionary<char, char> BuildMapFromKey(object key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             var k = key.ToString()!.ToUpperInvariant();
-            // Anahtar 26 harflik bir permütasyon olmalı (A-Z)
+            // Key must be a permutation of the alphabet (A-Z)
             if (k.Length != 26 || k.Any(c => c < 'A' || c > 'Z') || k.Distinct().Count() != 26)
-                throw new ArgumentException("Anahtar 26 harften oluşan bir permütasyon olmalıdır.");
+                throw new ArgumentException("Key must be a 26-character permutation of A-Z.");
             var map = new Dictionary<char, char>(26);
             for (int i = 0; i < 26; i++)
             {

@@ -3,6 +3,9 @@ using System.Windows.Input;
 
 namespace CipherApp.ViewModels
 {
+    /// <summary>
+    /// Minimal ICommand implementation that forwards execution and can-execute logic to delegates.
+    /// </summary>
     public class RelayCommand : ICommand
     {
         private readonly Action _execute;

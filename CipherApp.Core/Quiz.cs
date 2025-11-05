@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Represents a generated quiz prompt with all data required to display and grade the challenge.
+    /// </summary>
     public record CipherQuestion(
         string CipherName,
         string Plaintext,
@@ -13,6 +16,9 @@ namespace CipherApp.Core
         string KeyValue
     );
 
+    /// <summary>
+    /// Produces randomized cipher questions by sampling plaintexts, keys, and algorithm descriptions.
+    /// </summary>
     public class QuizGenerator
     {
         private readonly Random _rng = new Random();
@@ -20,11 +26,12 @@ namespace CipherApp.Core
 
         private static readonly string[] Words = new[]
         {
-            "MERHABA","SIFRE","KRIPTO","ALGORITMA","GUVENLIK","ANAHTAR","MESAJ","COZUM","ORNEK","METIN","TURKIYE","BILGI"
+            "HELLO","CIPHER","CRYPTO","ALGORITHM","SECURITY","KEY","MESSAGE","EXAMPLE","KNOWLEDGE","PUZZLE","ENCODE","DECODE"
         };
 
         public QuizGenerator()
         {
+            // Catalogue of cipher implementations that the quiz can randomly choose from.
             _ciphers = new ICipher[]
             {
                 new CaesarCipher(),
@@ -32,7 +39,9 @@ namespace CipherApp.Core
                 new PlayfairCipher(),
                 new HillCipher(),
                 new VigenereCipher(),
-                new TranspositionCipher()
+                new TranspositionCipher(),
+                new XorCipher(),
+                new Base64Cipher()
             };
         }
 
@@ -57,13 +66,15 @@ namespace CipherApp.Core
         {
             return cipher switch
             {
-                CaesarCipher => ( _rng.Next(1, 26), "Kaydırma (0-25)"),
-                MonoalphabeticCipher => ( RandomPermutation(), "26 harflik permütasyon"),
-                PlayfairCipher => ( RandomWord(6), "Anahtar kelime"),
-                HillCipher => ( RandomInvertible2x2(), "2x2 matris (mod 26)"),
-                VigenereCipher => ( RandomWord(5), "Anahtar kelime"),
-                TranspositionCipher => ( RandomWord(6), "Sütun anahtar kelime"),
-                _ => (1, "")
+                CaesarCipher => (_rng.Next(1, 26), "Shift value (0-25)"),
+                MonoalphabeticCipher => (RandomPermutation(), "26-letter permutation"),
+                PlayfairCipher => (RandomWord(6), "Keyword"),
+                HillCipher => (RandomInvertible2x2(), "2x2 matrix (mod 26)"),
+                VigenereCipher => (RandomWord(5), "Keyword"),
+                TranspositionCipher => (RandomWord(6), "Column keyword"),
+                XorCipher => (RandomWord(6), "XOR key text"),
+                Base64Cipher => (string.Empty, "No key required"), // Encoding needs no key
+                _ => (1, string.Empty)
             };
         }
 
@@ -80,7 +91,7 @@ namespace CipherApp.Core
 
         private string RandomWord(int len)
         {
-            var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             return new string(Enumerable.Range(0, len).Select(_ => alphabet[_rng.Next(alphabet.Length)]).ToArray());
         }
 
@@ -102,4 +113,3 @@ namespace CipherApp.Core
         }
     }
 }
-

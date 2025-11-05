@@ -3,10 +3,13 @@ using System.Text;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Provides a Vigenere cipher implementation with key normalization and explanatory helpers.
+    /// </summary>
     public class VigenereCipher : ICipher
     {
-        public string Name => "Vigenère Şifresi";
-        public string Description => "Çokalfabeli kaydırma: anahtar kelime harf harf kaydırma miktarlarını belirler. Çözüm için Kasiski ve Friedman testleri kullanılır.";
+        public string Name => "Vigenere Cipher";
+        public string Description => "A polyalphabetic shift where the keyword defines the shift for each letter. Classic attacks include Kasiski and Friedman tests.";
 
         public string Encrypt(string plaintext, object key)
         {
@@ -49,7 +52,8 @@ namespace CipherApp.Core
         public string Explain(object key)
         {
             var k = PrepareKey(key);
-            return $"Vigenère, her harfi anahtarın ilgili harfi kadar kaydırır. Örn: A + {k[0]} → {TextUtil.IndexToChar(TextUtil.CharToIndex('A') + TextUtil.CharToIndex(k[0]))}.";
+            int firstShift = TextUtil.CharToIndex(k[0]);
+            return $"The Vigenere cipher shifts each letter by the matching keyword letter. Example: A + {k[0]} -> {TextUtil.IndexToChar(TextUtil.CharToIndex('A') + firstShift)}.";
         }
 
         private string PrepareKey(object key)
@@ -60,9 +64,8 @@ namespace CipherApp.Core
             {
                 if (c >= 'A' && c <= 'Z') k.Append(c);
             }
-            if (k.Length == 0) throw new ArgumentException("Anahtar yalnızca harflerden oluşmalıdır.");
+            if (k.Length == 0) throw new ArgumentException("Key must contain letters only.");
             return k.ToString();
         }
     }
 }
-

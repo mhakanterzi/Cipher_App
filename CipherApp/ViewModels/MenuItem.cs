@@ -1,5 +1,8 @@
 namespace CipherApp.ViewModels
 {
+    /// <summary>
+    /// Describes a navigation entry used by the menu list in the WPF shell.
+    /// </summary>
     public class MenuItem
     {
         public string Title { get; set; } = string.Empty;

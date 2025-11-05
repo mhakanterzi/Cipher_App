@@ -3,10 +3,13 @@ using System.Text;
 
 namespace CipherApp.Core
 {
+    /// <summary>
+    /// Implements the classic Caesar shift cipher with modular arithmetic and descriptive helpers.
+    /// </summary>
     public class CaesarCipher : ICipher
     {
-        public string Name => "Sezar (Caesar) Şifrelemesi";
-        public string Description => "Her harf sabit bir anahtar kadar kaydırılır. Çözüm için frekans analizi ve tüm anahtarları deneme kullanılabilir.";
+        public string Name => "Caesar Cipher";
+        public string Description => "Each letter is shifted by a fixed key value. Typical attacks include frequency analysis and trying every key.";
 
         public string Encrypt(string plaintext, object key)
         {
@@ -33,7 +36,7 @@ namespace CipherApp.Core
         public string Explain(object key)
         {
             int k = NormalizeKey(key);
-            return $"Sezar şifresi, her harfi alfabede {k} kadar kaydırır. Örn: A→{TextUtil.IndexToChar(k)}.";
+            return $"The Caesar cipher shifts each letter by {k}. Example: A -> {TextUtil.IndexToChar(k)}.";
         }
 
         private int NormalizeKey(object key)
@@ -41,8 +44,7 @@ namespace CipherApp.Core
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (key is int i) return TextUtil.Mod(i, 26);
             if (int.TryParse(key.ToString(), out int v)) return TextUtil.Mod(v, 26);
-            throw new ArgumentException("Anahtar bir tamsayı olmalıdır (0-25).", nameof(key));
+            throw new ArgumentException("Key must be an integer between 0 and 25.", nameof(key));
         }
     }
 }
-

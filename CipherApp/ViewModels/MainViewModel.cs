@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,9 +8,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Text;
 
 namespace CipherApp.ViewModels
 {
+    /// <summary>
+    /// Coordinates UI state, command logic, and educational helpers for the CipherApp WPF experience.
+    /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
         // Navigation
@@ -129,17 +133,20 @@ namespace CipherApp.ViewModels
         public MainViewModel()
         {
             // Navigation items map to TabControl order below
-            MenuItems.Add(new MenuItem { Title = "Atölye", Icon = "🧪", TabIndex = 0 });
-            MenuItems.Add(new MenuItem { Title = "Adım Adım", Icon = "🪜", TabIndex = 1 });
-            MenuItems.Add(new MenuItem { Title = "Soru", Icon = "❓", TabIndex = 2 });
+            MenuItems.Add(new MenuItem { Title = "Workshop", Icon = "[W]", TabIndex = 0 });
+            MenuItems.Add(new MenuItem { Title = "Step-by-Step", Icon = "[S]", TabIndex = 1 });
+            MenuItems.Add(new MenuItem { Title = "Quiz", Icon = "[Q]", TabIndex = 2 });
             SelectedMenu = MenuItems[0];
 
+            // Populate the cipher catalog exposed to the UI.
             CipherList.Add(new CaesarCipher());
             CipherList.Add(new MonoalphabeticCipher());
             CipherList.Add(new PlayfairCipher());
             CipherList.Add(new HillCipher());
             CipherList.Add(new VigenereCipher());
             CipherList.Add(new TranspositionCipher());
+            CipherList.Add(new XorCipher());
+            CipherList.Add(new Base64Cipher());
             SelectedCipher = CipherList[0];
 
             EncryptCommand = new RelayCommand(DoEncrypt, () => SelectedCipher != null);
@@ -195,12 +202,14 @@ namespace CipherApp.ViewModels
                 Explanation = SelectedCipher.Description;
                 KeyHint = SelectedCipher switch
                 {
-                    CaesarCipher => "Anahtar: sayı (ör. 3)",
-                    VigenereCipher => "Anahtar: kelime (ör. ANAHTAR)",
-                    MonoalphabeticCipher => "Anahtar: 26 harflik permütasyon",
-                    PlayfairCipher => "Anahtar: kelime (I/J birleşik)",
-                    HillCipher => "Anahtar: 'a b c d' (ör. 3 3 2 5)",
+                    CaesarCipher => "Anahtar: say\u0131 (\u00F6rn. 3)",
+                    VigenereCipher => "Anahtar: kelime (\u00F6rn. ANAHTAR)",
+                    MonoalphabeticCipher => "Anahtar: 26 harflik perm\u00FCtasyon",
+                    PlayfairCipher => "Anahtar: kelime (I/J birle\u015Fik)",
+                    HillCipher => "Anahtar: 'a b c d' (\u00F6rn. 3 3 2 5)",
                     TranspositionCipher => "Anahtar: kelime (kolon)",
+                    XorCipher => "Anahtar: UTF-8 metin (\u00F6rn. GIZLI)",
+                    Base64Cipher => "Anahtar gerekmez (bo\u015F b\u0131rak)",
                     _ => string.Empty
                 };
                 UpdatePlayfairBoard();
@@ -223,8 +232,7 @@ namespace CipherApp.ViewModels
         {
             if (CurrentQuestion == null) return;
             // Show the decryption and details; also mark as revealed for Soru sekmesi
-            Explanation = $"Soru Çözümü:\n{CurrentQuestion.Explanation}\n\nDüz metin: {CurrentQuestion.Plaintext}\nŞifreli: {CurrentQuestion.Ciphertext}\nŞifre: {CurrentQuestion.CipherName}\nAnahtar: {CurrentQuestion.KeyValue} ({CurrentQuestion.KeyDescription})";
-            IsAnswerRevealed = true;
+            Explanation = $"Soru \u00C7\u00F6z\u00FCm\u00FC:\n{CurrentQuestion.Explanation}\n\nD\u00FCz metin: {CurrentQuestion.Plaintext}\n\u015Eifreli: {CurrentQuestion.Ciphertext}\n\u015Eifre: {CurrentQuestion.CipherName}\nAnahtar: {CurrentQuestion.KeyValue} ({CurrentQuestion.KeyDescription})";
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -245,32 +253,32 @@ namespace CipherApp.ViewModels
             {
                 if (SelectedCipher is CaesarCipher)
                 {
-                    if (!int.TryParse(key, out var k)) throw new("Anahtar sayı olmalı (örn: 3)");
+                    if (!int.TryParse(key, out var k)) throw new("Anahtar say\u0131 olmal\u0131 (\u00F6rn: 3)");
                     var input = text.ToUpperInvariant();
                     int idx = 1;
-                    Steps.Add(new StepItem { Index = idx++, Text = encrypt ? $"Her harfi +{k} kaydır." : $"Her harfi -{k} kaydır." });
+                    Steps.Add(new StepItem { Index = idx++, Text = encrypt ? $"Her harfi +{k} kayd\u0131r." : $"Her harfi -{k} kayd\u0131r." });
                     foreach (var ch in input)
                     {
-                        if (ch < 'A' || ch > 'Z') { Steps.Add(new StepItem { Index = idx++, Text = $"{ch} → aynen bırak" }); continue; }
+                        if (ch < 'A' || ch > 'Z') { Steps.Add(new StepItem { Index = idx++, Text = $"{ch} â†’ aynen b\u0131rak" }); continue; }
                         int pos = ch - 'A';
                         int pos2 = ((pos + (encrypt ? k : -k)) % 26 + 26) % 26;
                         char outc = (char)('A' + pos2);
-                        Steps.Add(new StepItem { Index = idx++, Text = $"{ch}({pos}) {(encrypt ? "+" : "-")} {Math.Abs(k)} = {pos2} → {outc}" });
+                        Steps.Add(new StepItem { Index = idx++, Text = $"{ch}({pos}) {(encrypt ? "+" : "-")} {Math.Abs(k)} = {pos2} â†’ {outc}" });
                     }
                 }
                 else if (SelectedCipher is VigenereCipher)
                 {
                     var kstr = new string(key.ToUpperInvariant().Where(c => c >= 'A' && c <= 'Z').ToArray());
-                    if (kstr.Length == 0) throw new("Anahtar kelime olmalı");
+                    if (kstr.Length == 0) throw new("Anahtar kelime olmal\u0131");
                     var input = text.ToUpperInvariant();
-                    Steps.Add(new StepItem { Index = 1, Text = $"Anahtar tekrarı: {RepeatKey(kstr, input.Length)}" });
+                    Steps.Add(new StepItem { Index = 1, Text = $"Anahtar tekrar\u0131: {RepeatKey(kstr, input.Length)}" });
                     int idx = 2; int ki = 0;
                     foreach (var ch in input)
                     {
-                        if (ch < 'A' || ch > 'Z') { Steps.Add(new StepItem { Index = idx++, Text = $"{ch} → aynen bırak" }); continue; }
+                        if (ch < 'A' || ch > 'Z') { Steps.Add(new StepItem { Index = idx++, Text = $"{ch} â†’ aynen b\u0131rak" }); continue; }
                         int p = ch - 'A'; int k = kstr[ki % kstr.Length] - 'A';
                         int r = ((encrypt ? p + k : p - k) % 26 + 26) % 26; char outc = (char)('A' + r);
-                        Steps.Add(new StepItem { Index = idx++, Text = $"{ch}({p}) {(encrypt ? "+" : "-")} {kstr[ki%kstr.Length]}({k}) = {r} → {outc}" });
+                        Steps.Add(new StepItem { Index = idx++, Text = $"{ch}({p}) {(encrypt ? "+" : "-")} {kstr[ki%kstr.Length]}({k}) = {r} â†’ {outc}" });
                         ki++;
                     }
                 }
@@ -278,7 +286,7 @@ namespace CipherApp.ViewModels
                 {
                     // Build grid and digraphs, then describe rule used
                     var (grid, pos) = BuildPlayfair(key);
-                    Steps.Add(new StepItem { Index = 1, Text = "5x5 tablo hazırlandı (I/J birleşik)." });
+                    Steps.Add(new StepItem { Index = 1, Text = "5x5 tablo haz\u0131rland\u0131 (I/J birle\u015Fik)." });
                     Steps.Add(new StepItem { Index = 2, Text = GridToText(grid) });
                     var pairs = ToDigraphs(text);
                     int idx = 3;
@@ -286,18 +294,60 @@ namespace CipherApp.ViewModels
                     {
                         var (ra, ca) = pos[a]; var (rb, cb) = pos[b];
                         if (ra == rb)
-                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Aynı satır → sağa kaydır" });
+                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Ayn\u0131 sat\u0131r â†’ sa\u011Fa kayd\u0131r" });
                         else if (ca == cb)
-                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Aynı sütun → aşağı kaydır" });
+                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Ayn\u0131 s\u00FCtun â†’ a\u015Fa\u011F\u0131 kayd\u0131r" });
                         else
-                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Dikdörtgen → köşe değişimi" });
+                            Steps.Add(new StepItem { Index = idx++, Text = $"{a}{b}: Dikd\u00F6rtgen â†’ k\u00F6\u015Fe de\u011Fi\u015Fimi" });
+                    }
+                }
+                else if (SelectedCipher is XorCipher)
+                {
+                    // Provide byte-level XOR details so users can track each operation.
+                    if (string.IsNullOrWhiteSpace(key))
+                        throw new("XOR i\u00E7in bo\u015F olmayan bir anahtar gerekir.");
+
+                    // Outline the Base64 encoding stages (bytes, grouping, alphabet mapping).
+                    var inputBytes = Encoding.UTF8.GetBytes(text ?? string.Empty);
+                    var keyBytes = Encoding.UTF8.GetBytes(key);
+                    var repeatedKey = RepeatKeyBytes(keyBytes, inputBytes.Length);
+                    var cipherBytes = new byte[inputBytes.Length];
+
+                    Steps.Add(new StepItem { Index = 1, Text = $"Metin UTF-8 baytlar\u0131: {FormatHex(inputBytes)}" });
+                    Steps.Add(new StepItem { Index = 2, Text = $"Anahtar tekrar dizisi: {FormatHex(repeatedKey)}" });
+
+                    int idx = 3;
+                    for (int i = 0; i < inputBytes.Length; i++)
+                    {
+                        byte keyByte = keyBytes[i % keyBytes.Length];
+                        byte cipherByte = (byte)(inputBytes[i] ^ keyByte);
+                        cipherBytes[i] = cipherByte;
+                        Steps.Add(new StepItem { Index = idx++, Text = $"{DescribeByte(inputBytes[i])} XOR {DescribeByte(keyByte)} = 0x{cipherByte:X2}" });
+                    }
+
+                    Steps.Add(new StepItem { Index = idx, Text = $"Sonu\u00E7 (hex): {FormatHex(cipherBytes)}" });
+                }
+                else if (SelectedCipher is Base64Cipher)
+                {
+                    var inputBytes = Encoding.UTF8.GetBytes(text ?? string.Empty);
+                    Steps.Add(new StepItem { Index = 1, Text = "Metin UTF-8 baytlara d\u00F6n\u00FC\u015Ft\u00FCr\u00FCl\u00FCr." });
+                    Steps.Add(new StepItem { Index = 2, Text = $"Baytlar: {FormatHex(inputBytes)}" });
+
+                    if (inputBytes.Length == 0)
+                    {
+                        Steps.Add(new StepItem { Index = 3, Text = "Girdi bo\u015F oldu\u011Fu i\u00E7in Base64 \u00E7\u0131kt\u0131s\u0131 da bo\u015Ftur." });
+                    }
+                    else
+                    {
+                        Steps.Add(new StepItem { Index = 3, Text = "Baytlar 24 bitlik gruplara ayr\u0131l\u0131r ve her 6 bit Base64 alfabesine e\u015Flenir." });
+                        Steps.Add(new StepItem { Index = 4, Text = $"Sonu\u00E7 Base64 dizisi: {Convert.ToBase64String(inputBytes)}" });
                     }
                 }
                 else
                 {
-                    Steps.Add(new StepItem { Index = 1, Text = "Girdi normalleştir (harfler, büyük harf)." });
-                    Steps.Add(new StepItem { Index = 2, Text = "Algoritma kurallarını sırayla uygula." });
-                    Steps.Add(new StepItem { Index = 3, Text = "Sonucu derle ve doğrula." });
+                    Steps.Add(new StepItem { Index = 1, Text = "Girdi normalle\u015Ftir (harfler, b\u00FCy\u00FCk harf)." });
+                    Steps.Add(new StepItem { Index = 2, Text = "Algoritma kurallar\u0131n\u0131 s\u0131rayla uygula." });
+                    Steps.Add(new StepItem { Index = 3, Text = "Sonucu derle ve do\u011Frula." });
                 }
             }
             catch (System.Exception ex)
@@ -322,6 +372,42 @@ namespace CipherApp.ViewModels
         {
             if (string.IsNullOrEmpty(key)) return string.Empty;
             return new string(Enumerable.Range(0, len).Select(i => key[i % key.Length]).ToArray());
+        }
+
+        /// <summary>
+        /// Formats a byte array as space separated hexadecimal pairs to make step descriptions clearer.
+        /// </summary>
+        private static string FormatHex(byte[] data) =>
+            data.Length == 0 ? "(bo\u015F)" : string.Join(" ", data.Select(b => b.ToString("X2")));
+
+        /// <summary>
+        /// Repeats the provided key bytes so that they line up with the plaintext length for XOR operations.
+        /// </summary>
+        private static byte[] RepeatKeyBytes(byte[] keyBytes, int length)
+        {
+            if (length == 0)
+            {
+                return Array.Empty<byte>();
+            }
+
+            var result = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = keyBytes[i % keyBytes.Length];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Provides a readable representation of a byte, showing printable characters or falling back to hex.
+        /// </summary>
+        private static string DescribeByte(byte value)
+        {
+            char c = (char)value;
+            return c >= ' ' && c <= '~'
+                ? $"'{c}'(0x{value:X2})"
+                : $"0x{value:X2}";
         }
 
         // Minimal Playfair helpers for steps
@@ -364,9 +450,9 @@ namespace CipherApp.ViewModels
             try
             {
                 if (!string.IsNullOrEmpty(Output)) Clipboard.SetText(Output);
-                Toast("Çıktı kopyalandı");
+                Toast("A‡\u0131kt\u0131 kopyaland\u0131");
             }
-            catch { Toast("Kopyalama başarısız"); }
+            catch { Toast("Kopyalama ba\u015Far\u0131s\u0131z"); }
             await Task.CompletedTask;
         }
 
@@ -374,6 +460,7 @@ namespace CipherApp.ViewModels
         {
             if (SelectedCipher == null) return;
             var rnd = new Random();
+            var message = "Anahtar üretildi";
             if (SelectedCipher is CaesarCipher)
                 KeyInput = rnd.Next(1, 26).ToString();
             else if (SelectedCipher is VigenereCipher or PlayfairCipher or TranspositionCipher)
@@ -382,13 +469,20 @@ namespace CipherApp.ViewModels
                 KeyInput = RandomInvertible2x2();
             else if (SelectedCipher is MonoalphabeticCipher)
                 KeyInput = RandomPermutation();
-            Toast("Anahtar üretildi");
+            else if (SelectedCipher is XorCipher)
+                KeyInput = RandomWord(rnd.Next(4,7));
+            else if (SelectedCipher is Base64Cipher)
+            {
+                KeyInput = string.Empty;
+                message = "Base64 kodlama anahtar gerektirmez";
+            }
+            Toast(message);
         }
 
         private void InsertExample()
         {
             Plaintext = "KRIPTOGRAFI OGRENMEK COK EGLENCELI";
-            Toast("Örnek metin eklendi");
+            Toast("\u00D6rnek metin eklendi");
         }
 
         private async void Toast(string text)
@@ -462,4 +556,5 @@ namespace CipherApp.ViewModels
         }
     }
 }
+
 

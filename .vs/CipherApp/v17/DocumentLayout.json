@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DB12F604-E00E-48F4-83C7-D4301B0EBF3B}|CipherApp\\CipherApp.csproj|c:\\users\\lenovo\\desktop\\cipher_app\\cipherapp\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DB12F604-E00E-48F4-83C7-D4301B0EBF3B}|CipherApp\\CipherApp.csproj|solutionrelative:cipherapp\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5A46B5E7-2830-41FD-86BB-1B825301A2AC}|CipherApp.Core\\CipherApp.Core.csproj|c:\\users\\lenovo\\desktop\\cipher_app\\cipherapp.core\\xorcipher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5A46B5E7-2830-41FD-86BB-1B825301A2AC}|CipherApp.Core\\CipherApp.Core.csproj|solutionrelative:cipherapp.core\\xorcipher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\ViewModels\\MainViewModel.cs",
+              "RelativeDocumentMoniker": "CipherApp\\ViewModels\\MainViewModel.cs",
+              "ToolTip": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp\\ViewModels\\MainViewModel.cs",
+              "RelativeToolTip": "CipherApp\\ViewModels\\MainViewModel.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAADgv+oAAAAqAQAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T19:22:19.707Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "XorCipher.cs",
+              "DocumentMoniker": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\XorCipher.cs",
+              "RelativeDocumentMoniker": "CipherApp.Core\\XorCipher.cs",
+              "ToolTip": "C:\\Users\\lenovo\\Desktop\\Cipher_App\\CipherApp.Core\\XorCipher.cs",
+              "RelativeToolTip": "CipherApp.Core\\XorCipher.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAADgvz0AAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T19:22:06.505Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

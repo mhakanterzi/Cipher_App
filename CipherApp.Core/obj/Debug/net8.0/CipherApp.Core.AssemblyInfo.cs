@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CipherApp.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab4d3550b8265b89d656a21d7275a950d2456437")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af660479ba2ed6e71415f5e3aaa3bd8b5a7ce04d")]
 [assembly: System.Reflection.AssemblyProductAttribute("CipherApp.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CipherApp.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
